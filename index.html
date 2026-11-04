@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khảo Sát Định Kỳ - Nhóm 1.14 | ĐTV 1</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 antialiased flex flex-col">
+
+  <!-- Header Hàng Không Chuyên Nghiệp -->
+  <header class="bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 text-white shadow-lg sticky top-0 z-40 border-b border-sky-800/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div class="flex items-center space-x-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 to-yellow-200 text-slate-950 flex items-center justify-center font-extrabold text-xl shadow-md shadow-amber-500/20">
+          <i class="fa-solid fa-plane-up text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-sky-900/90 text-sky-200 border border-sky-700/60">Liên Đội Tiếp Viên 1</span>
+            <span class="text-xs text-amber-300 font-semibold flex items-center gap-1">
+              <i class="fa-solid fa-users"></i> Nhóm 1.14 (42 TV)
+            </span>
+          </div>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2 mt-0.5">
+            Theo Dõi Khảo Sát Hàng Tháng
+          </h1>
+        </div>
+      </div>
+
+      <!-- Action bar trên Header -->
+      <div class="flex items-center space-x-2 sm:space-x-3 self-end sm:self-auto">
+        <div class="relative">
+          <select id="monthSelect" class="bg-slate-800/90 hover:bg-slate-800 text-white text-xs sm:text-sm font-semibold py-2 pl-3 pr-8 rounded-xl border border-sky-700/60 focus:ring-2 focus:ring-amber-400 cursor-pointer shadow-inner transition outline-none">
+            <!-- Render via JS -->
+          </select>
+        </div>
+
+        <button onclick="promptExportPassword()" class="inline-flex items-center px-3 py-2 text-xs sm:text-sm font-medium text-slate-200 bg-slate-800/80 border border-slate-700 rounded-xl hover:bg-slate-700 hover:text-white transition shadow-sm">
+          <i class="fa-solid fa-file-excel mr-1.5 text-emerald-400"></i>
+          <span>Xuất Báo Cáo</span>
+        </button>
+
+        <button onclick="openDocsModal()" class="inline-flex items-center px-3.5 py-2 text-xs sm:text-sm font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 rounded-xl shadow-md shadow-amber-500/25 transition transform active:scale-95">
+          <i class="fa-solid fa-book-bookmark mr-1.5"></i>
+          <span>Tài Liệu Tham Khảo</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Khung Thống Kê & KPI -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 flex-grow">
+    
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Tổng Quân Số</span>
+          <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-users"></i>
+          </div>
+        </div>
+        <p id="totalCount" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">42</p>
+        <span class="text-[11px] font-semibold text-slate-400 mt-0.5 block">Tiếp viên Nhóm 1.14</span>
+        <div class="absolute bottom-0 left-0 right-0 h-1 bg-slate-200"></div>
+      </div>
+
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Đã Hoàn Thành</span>
+          <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+        </div>
+        <p id="completedCount" class="text-2xl sm:text-3xl font-extrabold text-emerald-600 mt-2">0</p>
+        <span class="text-[11px] font-semibold text-emerald-600/80 mt-0.5 block">Đã nộp bài khảo sát</span>
+        <div class="absolute bottom-0 left-0 right-0 h-1 bg-emerald-500"></div>
+      </div>
+
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-rose-500 uppercase tracking-wider">Chưa Hoàn Thành</span>
+          <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-circle-xmark"></i>
+          </div>
+        </div>
+        <p id="pendingCount" class="text-2xl sm:text-3xl font-extrabold text-rose-600 mt-2">42</p>
+        <span class="text-[11px] font-semibold text-rose-500/80 mt-0.5 block">Cần nhắc nhở / đôn đốc</span>
+        <div class="absolute bottom-0 left-0 right-0 h-1 bg-rose-500"></div>
+      </div>
+
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Tỷ Lệ Đạt</span>
+          <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-chart-pie"></i>
+          </div>
+        </div>
+        <div class="flex items-baseline space-x-2 mt-2">
+          <p id="ratePercent" class="text-2xl sm:text-3xl font-extrabold text-blue-700">0%</p>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-2 mt-2 overflow-hidden">
+          <div id="progressBar" class="bg-gradient-to-r from-blue-500 to-emerald-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 h-1 bg-blue-500"></div>
+      </div>
+    </div>
+
+    <!-- Thanh Lọc & Tìm Kiếm Tiếp Viên -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <!-- Search Input -->
+      <div class="relative flex-1">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="Tìm kiếm theo MNV, Tên (VD: 4616, Phong 17, Minh Anh)..." 
+          class="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-100 transition"
+        >
+      </div>
+
+      <!-- Bộ lọc Chức Vụ / Hạng Tiếp Viên & Bộ lọc Trạng Thái -->
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Hạng Dropdown -->
+        <select id="roleFilter" onchange="setRoleFilter(this.value)" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 outline-none focus:border-blue-500 cursor-pointer">
+          <option value="all">Tất cả chức danh (X, P, B, Y)</option>
+          <option value="X">Hạng X (Tiếp viên trưởng)</option>
+          <option value="P">Hạng P (Phổ thông)</option>
+          <option value="B">Hạng B (Thương gia)</option>
+          <option value="Y">Hạng Y</option>
+        </select>
+
+        <!-- Trạng Thái Tabs -->
+        <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs font-semibold">
+          <button onclick="setStatusFilter('all')" id="status-all" class="status-btn px-3 py-1.5 rounded-lg transition bg-white shadow-sm text-slate-900">
+            Tất cả (<span id="count-all">42</span>)
+          </button>
+          <button onclick="setStatusFilter('done')" id="status-done" class="status-btn px-3 py-1.5 rounded-lg transition text-slate-600 hover:text-slate-900">
+            Đã nộp (<span id="count-done">0</span>)
+          </button>
+          <button onclick="setStatusFilter('pending')" id="status-pending" class="status-btn px-3 py-1.5 rounded-lg transition text-slate-600 hover:text-slate-900">
+            Chưa nộp (<span id="count-pending">42</span>)
+          </button>
+        </div>
+
+        <button onclick="resetMonthStatus()" title="Làm mới trạng thái tháng này" class="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl border border-slate-200 transition">
+          <i class="fa-solid fa-arrows-rotate text-sm"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bảng danh sách thành viên -->
+    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+      <div class="overflow-x-auto custom-scroll">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50/90 border-b border-slate-200/80 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              <th class="py-3 px-4 text-center w-12">STT</th>
+              <th class="py-3 px-4 w-24">MNV</th>
+              <th class="py-3 px-4">Họ và Tên Tiếp Viên</th>
+              <th class="py-3 px-4 text-center w-28">Chức vụ</th>
+              <th class="py-3 px-4 text-center hidden md:table-cell w-28">Nhóm cũ</th>
+              <th class="py-3 px-4 text-center w-36">Khảo sát</th>
+              <th class="py-3 px-4 w-56 text-left">Thời gian hoàn thành</th>
+              <th class="py-3 px-4 text-center w-32">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="memberTableBody" class="divide-y divide-slate-100 text-sm">
+            <!-- Render via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Trạng thái trống khi lọc -->
+      <div id="emptyState" class="hidden p-12 text-center">
+        <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400 mb-3 text-2xl">
+          <i class="fa-solid fa-user-slash"></i>
+        </div>
+        <p class="text-slate-700 font-semibold text-sm">Không tìm thấy tiếp viên phù hợp</p>
+        <p class="text-slate-400 text-xs mt-1">Vui lòng kiểm tra lại MNV hoặc điều kiện lọc</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal Chỉnh Sửa Thời Gian Hoàn Thành Thủ Công (Dành cho Quản Lý/Nhóm Trưởng) -->
+  <div id="editTimeModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden p-6 space-y-4 border border-slate-100">
+      <div class="flex items-center space-x-3 pb-2 border-b border-slate-100">
+        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-base">
+          <i class="fa-solid fa-calendar-days"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-slate-900 text-sm">Cập Nhật Thời Gian Hoàn Thành</h3>
+          <p id="editTimeMemberName" class="text-xs text-slate-500 font-medium"></p>
+        </div>
+      </div>
+
+      <input type="hidden" id="editTimeMnv">
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Mốc ngày giờ hoàn thành:</label>
+          <input 
+            type="datetime-local" 
+            id="editDateTimeInput" 
+            class="w-full text-xs sm:text-sm px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-600 focus:bg-white"
+          >
+        </div>
+        <button type="button" onclick="setCurrentDateTimeToInput()" class="text-[11px] font-semibold text-blue-700 hover:underline flex items-center gap-1">
+          <i class="fa-solid fa-clock-rotate-left"></i> Lấy thời gian hiện tại
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-2 pt-2 border-t border-slate-100">
+        <button onclick="closeEditTimeModal()" class="w-1/2 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">
+          Hủy bỏ
+        </button>
+        <button onclick="saveManualTimestamp()" class="w-1/2 py-2 text-xs font-bold text-white bg-blue-700 hover:bg-blue-800 rounded-xl shadow-md transition">
+          Lưu mốc giờ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Tài Liệu Tham Khảo & Up File PDF/Word -->
+  <div id="docsModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] border border-slate-100">
+      <div class="flex items-center justify-between p-5 border-b border-slate-100 bg-gradient-to-r from-slate-900 to-sky-950 text-white">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-400/20 text-amber-300 border border-amber-400/30 flex items-center justify-center font-bold">
+            <i class="fa-solid fa-book-open text-base"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-base text-white">Tài Liệu Tham Khảo & Đáp Án Khảo Sát</h3>
+            <p class="text-xs text-sky-200">Kho dữ liệu học tập, đáp án & văn bản PDF/Word Nhóm 1.14</p>
+          </div>
+        </div>
+        <button onclick="closeDocsModal()" class="text-slate-300 hover:text-white text-lg w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-4 flex-grow custom-scroll">
+        <!-- Khu vực thêm tài liệu mới & Upload file PDF / Word -->
+        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+              <i class="fa-solid fa-cloud-arrow-up text-sky-600"></i> Đăng tải tài liệu / Đính kèm file PDF, Word
+            </span>
+            <button onclick="toggleAddDocForm()" id="toggleDocFormBtn" class="text-xs font-semibold text-blue-700 hover:underline">
+              + Mở form nhập
+            </button>
+          </div>
+
+          <form id="addDocForm" onsubmit="handleAddNewDoc(event)" class="hidden space-y-3 pt-2">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Tiêu đề tài liệu / khảo sát:</label>
+              <input type="text" id="newDocTitle" required placeholder="VD: Đáp Án Khảo Sát Định Kỳ An Toàn Bay Tháng 11/2026" class="w-full text-xs px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-500">
+            </div>
+            
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Nội dung tóm tắt đáp án / Ghi chú ôn tập:</label>
+              <textarea id="newDocContent" rows="3" placeholder="Nhập đáp án (VD: 1.A, 2.C...) hoặc lưu ý cho tiếp viên làm bài..." class="w-full text-xs px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-500"></textarea>
+            </div>
+
+            <!-- Upload File PDF / Word -->
+            <div class="bg-white p-3 rounded-xl border border-dashed border-sky-300">
+              <label class="block text-xs font-bold text-slate-800 mb-1 flex items-center gap-1.5">
+                <i class="fa-solid fa-paperclip text-sky-600"></i> Đính kèm tệp văn bản (PDF, Word .docx/.doc):
+              </label>
+              <input 
+                type="file" 
+                id="docFileInput" 
+                accept=".pdf, .doc, .docx, application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 cursor-pointer"
+              >
+              <p class="text-[10px] text-slate-400 mt-1">Hỗ trợ tệp định dạng PDF, Word (.docx, .doc). File được lưu trữ cục bộ bảo mật trên máy.</p>
+            </div>
+
+            <div class="flex items-center justify-between gap-2">
+              <input type="text" id="newDocLink" placeholder="Hoặc dán Link ngoài (Google Drive, VNA portal...)" class="text-xs flex-grow px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-blue-500">
+              <button type="submit" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-xs font-bold shadow transition flex-shrink-0">
+                <i class="fa-solid fa-floppy-disk mr-1"></i> Lưu & Tải Lên
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Danh sách tài liệu hiện có -->
+        <div class="space-y-3">
+          <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Danh mục tài liệu & đề thi đã lưu</h4>
+          <div id="docsListContainer" class="space-y-3">
+            <!-- Dynamic docs list -->
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+        <span class="text-xs text-slate-500"><i class="fa-solid fa-shield-halved text-emerald-600 mr-1"></i>Hệ thống tự động lưu trữ tài liệu offline</span>
+        <button onclick="closeDocsModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-200 bg-white border border-slate-200 rounded-xl transition">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Nhập Mật Khẩu Xuất Báo Cáo -->
+  <div id="exportPasswordModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden p-6 space-y-4 border border-slate-100">
+      <div class="text-center">
+        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-inner">
+          <i class="fa-solid fa-lock text-xl"></i>
+        </div>
+        <h3 class="font-bold text-slate-900 text-base">Xác Thực Quản Lý Nhóm</h3>
+        <p class="text-xs text-slate-500 mt-1">Nhập mật khẩu để tiến hành xuất báo cáo Nhóm 1.14</p>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1.5">Mật khẩu xuất file:</label>
+        <div class="relative">
+          <input 
+            type="password" 
+            id="exportPasswordInput" 
+            placeholder="Nhập mã bảo vệ..." 
+            class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-100 transition"
+            onkeydown="if(event.key === 'Enter') verifyExportPassword()"
+          >
+          <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600">
+            <i id="eyeIcon" class="fa-regular fa-eye text-sm"></i>
+          </button>
+        </div>
+        <p id="passwordError" class="text-[11px] text-rose-600 font-semibold mt-1.5 hidden flex items-center">
+          <i class="fa-solid fa-circle-exclamation mr-1"></i> Mật khẩu không chính xác! Vui lòng thử lại.
+        </p>
+      </div>
+
+      <div class="flex items-center space-x-2 pt-2">
+        <button onclick="closeExportPasswordModal()" class="w-1/2 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">
+          Hủy bỏ
+        </button>
+        <button onclick="verifyExportPassword()" class="w-1/2 py-2 text-xs font-bold text-white bg-blue-700 hover:bg-blue-800 rounded-xl shadow-md shadow-blue-600/30 transition flex items-center justify-center">
+          <i class="fa-solid fa-check mr-1.5"></i> Xác Nhận
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-16 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center space-x-3 border border-slate-700">
+      <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+      <span id="toastMessage" class="text-xs sm:text-sm font-semibold">Thông báo</span>
+    </div>
+  </div>
+
+  <!-- Javascript Logic -->
+  <script>
+    // Dữ liệu chính xác 42 tiếp viên Nhóm 1.14 thuộc Liên đội tiếp viên 1
+    const TEAM_MEMBERS = [
+      { stt: 1,  mnv: "4616", fullName: "NGUYỄN XUÂN PHONG 17", role: "X", oldGroup: "1.04.2", isLeader: true, note: "Nhóm trưởng" },
+      { stt: 2,  mnv: "3594", fullName: "NGUYỄN PHƯƠNG ANH 165", role: "P", oldGroup: "1.02.1", isLeader: false, note: "" },
+      { stt: 3,  mnv: "0178", fullName: "NGUYỄN THỊ PHƯƠNG MAI 1", role: "P", oldGroup: "1.02.3", isLeader: false, note: "" },
+      { stt: 4,  mnv: "0640", fullName: "NGUYỄN QUỐC NAM 2", role: "P", oldGroup: "1.04.4", isLeader: false, note: "" },
+      { stt: 5,  mnv: "2550", fullName: "NGÔ HUỲNH NGỌC THỦY 67", role: "P", oldGroup: "1.05.3", isLeader: false, note: "" },
+      { stt: 6,  mnv: "2402", fullName: "NGUYỄN NGỌC TUYẾT TRẦM 17", role: "P", oldGroup: "1.08.3", isLeader: false, note: "" },
+      { stt: 7,  mnv: "4620", fullName: "NGUYỄN THỊ SEN 1", role: "X", oldGroup: "1.07.4", isLeader: false, note: "" },
+      { stt: 8,  mnv: "2611", fullName: "VÕ HỒNG SƠN 19", role: "X", oldGroup: "1.04.2", isLeader: false, note: "" },
+      { stt: 9,  mnv: "6432", fullName: "TRƯƠNG NGỌC TÂN 11", role: "X", oldGroup: "1.07.3", isLeader: false, note: "" },
+      { stt: 10, mnv: "3485", fullName: "PHẠM NGUYỄN BẢO TRÂN 5", role: "X", oldGroup: "1.01.3", isLeader: false, note: "" },
+      { stt: 11, mnv: "3066", fullName: "NGUYỄN THỊ HOÀNG ANH 125", role: "B", oldGroup: "1.03.2", isLeader: false, note: "" },
+      { stt: 12, mnv: "6559", fullName: "NGUYỄN MINH ANH 351", role: "B", oldGroup: "1.01.3", isLeader: false, note: "" },
+      { stt: 13, mnv: "6729", fullName: "NGUYỄN MINH ANH 363", role: "B", oldGroup: "1.08.3", isLeader: false, note: "" },
+      { stt: 14, mnv: "2256", fullName: "LÊ THỊ PHƯƠNG CHI 17", role: "B", oldGroup: "1.03.1", isLeader: false, note: "" },
+      { stt: 15, mnv: "5164", fullName: "NGUYỄN TUẤN CƯỜNG 46", role: "B", oldGroup: "1.08.4", isLeader: false, note: "" },
+      { stt: 16, mnv: "3140", fullName: "NGUYỄN THỊ HÀ 76", role: "B", oldGroup: "1.07.3", isLeader: false, note: "" },
+      { stt: 17, mnv: "5548", fullName: "NGÔ BẢO LÂM 14", role: "B", oldGroup: "1.04.1.", isLeader: false, note: "" },
+      { stt: 18, mnv: "6516", fullName: "NGUYỄN THỊ ÚT NGÂN 47", role: "B", oldGroup: "1.01.2", isLeader: false, note: "" },
+      { stt: 19, mnv: "3759", fullName: "NGUYỄN LA MINH QUANG 16", role: "B", oldGroup: "1.01.1", isLeader: false, note: "" },
+      { stt: 20, mnv: "5645", fullName: "NGUYỄN NGỌC TÂN 8", role: "B", oldGroup: "1.02.3.", isLeader: false, note: "" },
+      { stt: 21, mnv: "7831", fullName: "NGUYỄN HỒNG XUÂN AN 45", role: "Y", oldGroup: "1.06.1", isLeader: false, note: "" },
+      { stt: 22, mnv: "7143", fullName: "NGUYỄN NGỌC PHƯƠNG ANH 391", role: "Y", oldGroup: "1.01.1", isLeader: false, note: "" },
+      { stt: 23, mnv: "8046", fullName: "ĐỖ THÀNH ĐẠT 33", role: "Y", oldGroup: "1.01.4", isLeader: false, note: "" },
+      { stt: 24, mnv: "8386", fullName: "TRẦN LÊ THỤC ĐOAN 7", role: "Y", oldGroup: "1.08.4", isLeader: false, note: "" },
+      { stt: 25, mnv: "4307", fullName: "TRẦN VIỆT HÀ 101", role: "Y", oldGroup: "1.05.3", isLeader: false, note: "" },
+      { stt: 26, mnv: "5315", fullName: "NINH VĂN HOAN 14", role: "Y", oldGroup: "1.07.2", isLeader: false, note: "" },
+      { stt: 27, mnv: "7436", fullName: "ĐOÀN THỊ THANH MAI 72", role: "Y", oldGroup: "1.02.3", isLeader: false, note: "" },
+      { stt: 28, mnv: "7949", fullName: "PHAN CÔNG MINH 85", role: "Y", oldGroup: "1.08.2", isLeader: false, note: "" },
+      { stt: 29, mnv: "5176", fullName: "ĐỒNG THÁP MƯỜI", role: "Y", oldGroup: "1.08.1", isLeader: false, note: "" },
+      { stt: 30, mnv: "6033", fullName: "NGÔ NGỌC TRÀ MY 53", role: "Y", oldGroup: "1.06.1", isLeader: false, note: "" },
+      { stt: 31, mnv: "7287", fullName: "HỒ HOÀNG NGÂN 69", role: "Y", oldGroup: "1.05.4", isLeader: false, note: "" },
+      { stt: 32, mnv: "8227", fullName: "PHẠM THỊ NGỌC NGÂN 84", role: "Y", oldGroup: "1.05.2", isLeader: false, note: "" },
+      { stt: 33, mnv: "6931", fullName: "LÊ THỊ BÍCH NGỌC 104", role: "Y", oldGroup: "1.06.3", isLeader: false, note: "" },
+      { stt: 34, mnv: "5995", fullName: "ĐỖ HỒNG NHÃ 3", role: "Y", oldGroup: "1.04.3", isLeader: false, note: "" },
+      { stt: 35, mnv: "7137", fullName: "NGÔ THỊ THẢO NHI 45", role: "Y", oldGroup: "1.07.4", isLeader: false, note: "" },
+      { stt: 36, mnv: "4618", fullName: "NGUYỄN MINH QUANG 18", role: "Y", oldGroup: "1.04.2", isLeader: false, note: "" },
+      { stt: 37, mnv: "3474", fullName: "NGUYỄN LỆ THỦY 80", role: "Y", oldGroup: "1.03.3", isLeader: false, note: "" },
+      { stt: 38, mnv: "3952", fullName: "TRẦN THỊ THÙY TIÊN 20", role: "Y", oldGroup: "1.06.2", isLeader: false, note: "" },
+      { stt: 39, mnv: "7157", fullName: "NGÔ THỊ THỦY TIÊN 47", role: "Y", oldGroup: "1.08.1", isLeader: false, note: "" },
+      { stt: 40, mnv: "6803", fullName: "HUỲNH NGUYỄN HÀ VY 41", role: "Y", oldGroup: "1.03.2", isLeader: false, note: "" },
+      { stt: 41, mnv: "7943", fullName: "HUỲNH PHI VY 64", role: "Y", oldGroup: "1.06.3", isLeader: false, note: "" },
+      { stt: 42, mnv: "8316", fullName: "TRẦN THỊ TIỂU YẾN 89", role: "Y", oldGroup: "1.03.2", isLeader: false, note: "" }
+    ];
+
+    const STORAGE_KEY = "SURVEY_APP_TEAM_1_14";
+    const DOCS_STORAGE_KEY = "SURVEY_APP_DOCS_1_14";
+    const EXPORT_PASSWORD_SECRET = "VNA@2026";
+
+    let appData = {};
+    let docsData = [];
+    let currentMonth = "2026-11";
+    let statusFilter = "all";
+    let roleFilterVal = "all";
+    let searchQuery = "";
+
+    // Mẫu tài liệu mặc định
+    const DEFAULT_DOCS = [
+      {
+        id: "doc-1",
+        title: "Đáp Án Khảo Sát Định Kỳ An Toàn Bay - Tháng 11/2026",
+        content: "1. A - Quy trình đóng cửa máy bay\n2. C - Kiểm tra thiết bị sơ cứu khẩn cấp\n3. B - Quy tắc phục vụ khoang C khi bay thời tiết xấu\n4. D - Tất cả các phương án trên",
+        fileName: "",
+        fileData: "",
+        link: "",
+        date: "01/11/2026"
+      },
+      {
+        id: "doc-2",
+        title: "Tài Liệu Ôn Tập Tiêu Chuẩn Phục Vụ 4 Sao VNA",
+        content: "Tài liệu tóm tắt quy chuẩn ngoại hình, tác phong đồng phục và quy trình đón tiếp khách Hội viên Bông Sen Vàng.",
+        fileName: "",
+        fileData: "",
+        link: "https://portal.vietnamairlines.com",
+        date: "28/10/2026"
+      }
+    ];
+
+    // Tải dữ liệu từ LocalStorage
+    function loadData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          appData = JSON.parse(raw);
+        }
+
+        const rawDocs = localStorage.getItem(DOCS_STORAGE_KEY);
+        if (rawDocs) {
+          docsData = JSON.parse(rawDocs);
+        } else {
+          docsData = DEFAULT_DOCS;
+          saveDocs();
+        }
+      } catch (e) {
+        console.error("Lỗi khi đọc LocalStorage", e);
+        docsData = DEFAULT_DOCS;
+      }
+
+      // Khởi tạo tháng hiện tại nếu chưa có dữ liệu
+      if (!appData[currentMonth]) {
+        appData[currentMonth] = {};
+        const initialChecked = [
+          { id: "4616", time: "01/11/2026 08:30" },
+          { id: "3594", time: "01/11/2026 09:15" },
+          { id: "2611", time: "02/11/2026 14:20" },
+          { id: "6559", time: "02/11/2026 16:45" },
+          { id: "7831", time: "03/11/2026 10:10" },
+          { id: "5176", time: "03/11/2026 11:05" },
+          { id: "7949", time: "03/11/2026 15:30" },
+          { id: "7143", time: "04/11/2026 08:50" }
+        ];
+        initialChecked.forEach(item => {
+          appData[currentMonth][item.id] = {
+            completed: true,
+            timestamp: item.time
+          };
+        });
+        saveData();
+      }
+    }
+
+    function saveData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      } catch (e) {
+        console.error("Lỗi khi lưu LocalStorage", e);
+      }
+    }
+
+    function saveDocs() {
+      try {
+        localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(docsData));
+      } catch (e) {
+        console.error("Lỗi khi lưu Docs vào LocalStorage", e);
+      }
+    }
+
+    // Modal Tài Liệu Tham Khảo
+    function openDocsModal() {
+      renderDocsList();
+      document.getElementById("docsModal").classList.remove("hidden");
+    }
+
+    function closeDocsModal() {
+      document.getElementById("docsModal").classList.add("hidden");
+    }
+
+    function toggleAddDocForm() {
+      const form = document.getElementById("addDocForm");
+      const btn = document.getElementById("toggleDocFormBtn");
+      if (form.classList.contains("hidden")) {
+        form.classList.remove("hidden");
+        btn.innerText = "Thu gọn";
+      } else {
+        form.classList.add("hidden");
+        btn.innerText = "+ Mở form nhập";
+      }
+    }
+
+    function renderDocsList() {
+      const container = document.getElementById("docsListContainer");
+      if (!docsData || docsData.length === 0) {
+        container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">Chưa có tài liệu nào được đăng tải.</div>`;
+        return;
+      }
+
+      container.innerHTML = docsData.map((doc) => {
+        let fileBadge = "";
+        if (doc.fileName) {
+          const isPdf = doc.fileName.toLowerCase().endsWith(".pdf");
+          fileBadge = `
+            <div class="mt-2.5 p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+              <div class="flex items-center space-x-2.5 overflow-hidden">
+                <div class="w-8 h-8 rounded-lg ${isPdf ? 'bg-rose-100 text-rose-600' : 'bg-blue-100 text-blue-600'} flex items-center justify-center flex-shrink-0 text-sm font-bold">
+                  <i class="${isPdf ? 'fa-solid fa-file-pdf' : 'fa-solid fa-file-word'}"></i>
+                </div>
+                <div class="truncate">
+                  <p class="text-xs font-bold text-slate-800 truncate">${doc.fileName}</p>
+                  <span class="text-[10px] text-slate-400">Tệp văn bản đính kèm</span>
+                </div>
+              </div>
+              ${doc.fileData ? `
+                <a href="${doc.fileData}" download="${doc.fileName}" class="px-2.5 py-1 text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 rounded-lg transition inline-flex items-center flex-shrink-0">
+                  <i class="fa-solid fa-download mr-1"></i> Tải về
+                </a>
+              ` : `
+                <span class="text-[11px] text-slate-400 italic">Lưu nội bộ</span>
+              `}
+            </div>
+          `;
+        }
+
+        return `
+          <div class="p-4 bg-white border border-slate-200/90 rounded-2xl hover:border-sky-300 transition shadow-sm space-y-2">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-sky-50 text-sky-700 border border-sky-100 mb-1">
+                  ${doc.date || 'Lưu hành nội bộ'}
+                </span>
+                <h5 class="text-sm font-bold text-slate-900 leading-snug">${doc.title}</h5>
+              </div>
+              <button onclick="deleteDoc('${doc.id}')" class="text-slate-400 hover:text-rose-500 text-xs p-1" title="Xóa tài liệu này">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+            </div>
+
+            ${doc.content ? `
+              <div class="p-3 bg-slate-50/80 rounded-xl text-xs text-slate-700 font-mono whitespace-pre-wrap leading-relaxed border border-slate-100">
+                ${doc.content}
+              </div>
+            ` : ''}
+
+            ${fileBadge}
+
+            ${doc.link ? `
+              <div class="pt-1">
+                <a href="${doc.link}" target="_blank" class="inline-flex items-center text-xs font-semibold text-blue-700 hover:text-blue-900 hover:underline">
+                  <i class="fa-solid fa-arrow-up-right-from-square mr-1 text-[11px]"></i> Truy cập link tài liệu ngoài
+                </a>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function handleAddNewDoc(e) {
+      e.preventDefault();
+      const title = document.getElementById("newDocTitle").value.trim();
+      const content = document.getElementById("newDocContent").value.trim();
+      const link = document.getElementById("newDocLink").value.trim();
+      const fileInput = document.getElementById("docFileInput");
+      const file = fileInput.files[0];
+
+      if (!title) {
+        showToast("Vui lòng nhập tiêu đề tài liệu!", "warning");
+        return;
+      }
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const newDoc = {
+            id: "doc-" + Date.now(),
+            title: title,
+            content: content,
+            fileName: file.name,
+            fileData: evt.target.result,
+            link: link,
+            date: getFormattedTime().split(" ")[0]
+          };
+          docsData.unshift(newDoc);
+          saveDocs();
+          renderDocsList();
+          resetDocForm();
+          showToast(`Đã lưu tài liệu & tệp [${file.name}] thành công!`, "success");
+        };
+        reader.onerror = function() {
+          showToast("Lỗi khi tải tệp văn bản!", "warning");
+        };
+        reader.readAsDataURL(file);
+      } else {
+        const newDoc = {
+          id: "doc-" + Date.now(),
+          title: title,
+          content: content,
+          fileName: "",
+          fileData: "",
+          link: link,
+          date: getFormattedTime().split(" ")[0]
+        };
+        docsData.unshift(newDoc);
+        saveDocs();
+        renderDocsList();
+        resetDocForm();
+        showToast("Đã lưu tài liệu / đáp án thành công!", "success");
+      }
+    }
+
+    function resetDocForm() {
+      document.getElementById("newDocTitle").value = "";
+      document.getElementById("newDocContent").value = "";
+      document.getElementById("newDocLink").value = "";
+      document.getElementById("docFileInput").value = "";
+      toggleAddDocForm();
+    }
+
+    function deleteDoc(id) {
+      if (confirm("Bạn có chắc muốn xóa tài liệu này?")) {
+        docsData = docsData.filter(d => d.id !== id);
+        saveDocs();
+        renderDocsList();
+        showToast("Đã xóa tài liệu!", "info");
+      }
+    }
+
+    // Modal Sửa Thời Gian Hoàn Thành Thủ Công
+    function openEditTimeModal(mnv) {
+      const member = TEAM_MEMBERS.find(m => m.mnv === mnv);
+      if (!member) return;
+
+      document.getElementById("editTimeMnv").value = mnv;
+      document.getElementById("editTimeMemberName").innerText = `[MNV: ${mnv}] ${member.fullName}`;
+
+      const monthData = appData[currentMonth] || {};
+      const record = monthData[mnv];
+
+      const input = document.getElementById("editDateTimeInput");
+      if (record && record.timestamp) {
+        const parts = record.timestamp.split(" ");
+        if (parts.length === 2) {
+          const dParts = parts[0].split("/");
+          if (dParts.length === 3) {
+            input.value = `${dParts[2]}-${dParts[1].padStart(2, '0')}-${dParts[0].padStart(2, '0')}T${parts[1]}`;
+          }
+        }
+      } else {
+        setCurrentDateTimeToInput();
+      }
+
+      document.getElementById("editTimeModal").classList.remove("hidden");
+    }
+
+    function closeEditTimeModal() {
+      document.getElementById("editTimeModal").classList.add("hidden");
+    }
+
+    function setCurrentDateTimeToInput() {
+      const now = new Date();
+      const localIso = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+      document.getElementById("editDateTimeInput").value = localIso;
+    }
+
+    function saveManualTimestamp() {
+      const mnv = document.getElementById("editTimeMnv").value;
+      const inputVal = document.getElementById("editDateTimeInput").value;
+      if (!inputVal) {
+        showToast("Vui lòng chọn thời gian hợp lệ!", "warning");
+        return;
+      }
+
+      const d = new Date(inputVal);
+      const dd = String(d.getDate()).padStart(2, '0');
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const yyyy = d.getFullYear();
+      const hh = String(d.getHours()).padStart(2, '0');
+      const min = String(d.getMinutes()).padStart(2, '0');
+      const formatted = `${dd}/${mm}/${yyyy} ${hh}:${min}`;
+
+      const monthData = appData[currentMonth] || (appData[currentMonth] = {});
+      monthData[mnv] = {
+        completed: true,
+        timestamp: formatted
+      };
+
+      saveData();
+      render();
+      closeEditTimeModal();
+      showToast(`Đã cập nhật mốc thời gian hoàn thành cho [${mnv}]!`, "success");
+    }
+
+    // Modal Xuất File Bảo Mật Mật Khẩu
+    function promptExportPassword() {
+      const pwdInput = document.getElementById("exportPasswordInput");
+      pwdInput.value = "";
+      document.getElementById("passwordError").classList.add("hidden");
+      document.getElementById("exportPasswordModal").classList.remove("hidden");
+      setTimeout(() => pwdInput.focus(), 100);
+    }
+
+    function closeExportPasswordModal() {
+      document.getElementById("exportPasswordModal").classList.add("hidden");
+    }
+
+    function togglePasswordVisibility() {
+      const pwdInput = document.getElementById("exportPasswordInput");
+      const icon = document.getElementById("eyeIcon");
+      if (pwdInput.type === "password") {
+        pwdInput.type = "text";
+        icon.className = "fa-regular fa-eye-slash text-sm";
+      } else {
+        pwdInput.type = "password";
+        icon.className = "fa-regular fa-eye text-sm";
+      }
+    }
+
+    function verifyExportPassword() {
+      const pwdInput = document.getElementById("exportPasswordInput");
+      const err = document.getElementById("passwordError");
+
+      if (pwdInput.value === EXPORT_PASSWORD_SECRET) {
+        err.classList.add("hidden");
+        closeExportPasswordModal();
+        performExportCSV();
+      } else {
+        err.classList.remove("hidden");
+        pwdInput.classList.add("border-rose-400", "bg-rose-50/30");
+        pwdInput.focus();
+        showToast("Mật khẩu không chính xác!", "warning");
+      }
+    }
+
+    // Xuất báo cáo CSV chuẩn Unicode tiếng Việt
+    function performExportCSV() {
+      const monthData = appData[currentMonth] || {};
+      let csvContent = "\uFEFF"; // UTF-8 BOM
+      csvContent += "STT,Mã nhân viên,Họ và tên,Chức vụ/Hạng,Nhóm cũ,Nhóm chuyển đến,Ghi chú,Trạng thái khảo sát,Thời gian hoàn tất\n";
+
+      TEAM_MEMBERS.forEach((m, idx) => {
+        const rec = monthData[m.mnv];
+        const status = rec && rec.completed ? "Đã nộp" : "Chưa nộp";
+        const time = rec && rec.completed ? `"${rec.timestamp}"` : '""';
+        csvContent += `${idx + 1},"${m.mnv}","${m.fullName}","${m.role}","${m.oldGroup}","1.14","${m.note}","${status}",${time}\n`;
+      });
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `Bao_Cao_Khao_Sat_Nhom_1.14_${currentMonth}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("Mật khẩu chính xác! Đã xuất tệp báo cáo thành công.", "success");
+    }
+
+    // Format ngày giờ thực tế
+    function getFormattedTime() {
+      const now = new Date();
+      const dd = String(now.getDate()).padStart(2, '0');
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const yyyy = now.getFullYear();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const min = String(now.getMinutes()).padStart(2, '0');
+      return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
+    }
+
+    // Khởi tạo Dropdown Tháng
+    function initMonthSelector() {
+      const select = document.getElementById("monthSelect");
+      const months = [
+        { key: "2026-10", label: "Tháng 10/2026" },
+        { key: "2026-11", label: "Tháng 11/2026 (Hiện tại)" },
+        { key: "2026-12", label: "Tháng 12/2026" },
+        { key: "2027-01", label: "Tháng 01/2027" }
+      ];
+
+      select.innerHTML = months.map(m => `
+        <option value="${m.key}" ${m.key === currentMonth ? "selected" : ""}>${m.label}</option>
+      `).join("");
+
+      select.addEventListener("change", (e) => {
+        currentMonth = e.target.value;
+        if (!appData[currentMonth]) {
+          appData[currentMonth] = {};
+          saveData();
+        }
+        render();
+        showToast(`Đã chuyển sang xem ${e.target.options[e.target.selectedIndex].text}`, "info");
+      });
+    }
+
+    // Badge styling theo chức danh hàng không
+    function getRoleBadge(role, isLeader) {
+      if (isLeader) {
+        return `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300">
+                  <i class="fa-solid fa-crown text-[10px] mr-1 text-amber-600"></i>Nhóm Trưởng (X)
+                </span>`;
+      }
+      switch (role) {
+        case "X":
+          return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-purple-100 text-purple-800 border border-purple-200">Hạng X</span>`;
+        case "P":
+          return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200">Hạng P</span>`;
+        case "B":
+          return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-teal-100 text-teal-800 border border-teal-200">Hạng B</span>`;
+        case "Y":
+        default:
+          return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">Hạng Y</span>`;
+      }
+    }
+
+    // Chuyển đổi trạng thái trực tiếp
+    function toggleMemberStatus(mnv) {
+      const monthData = appData[currentMonth] || (appData[currentMonth] = {});
+      const member = TEAM_MEMBERS.find(m => m.mnv === mnv);
+
+      if (monthData[mnv] && monthData[mnv].completed) {
+        monthData[mnv] = { completed: false, timestamp: null };
+        showToast(`Đã hủy trạng thái hoàn thành của [${mnv}] ${member?.fullName}`, "info");
+      } else {
+        const timeNow = getFormattedTime();
+        monthData[mnv] = {
+          completed: true,
+          timestamp: timeNow
+        };
+        showToast(`Đã ghi nhận khảo sát cho [${mnv}] lúc ${timeNow}`, "success");
+      }
+
+      saveData();
+      render();
+    }
+
+    // Lọc theo trạng thái
+    function setStatusFilter(type) {
+      statusFilter = type;
+      document.querySelectorAll(".status-btn").forEach(btn => {
+        btn.classList.remove("bg-white", "shadow-sm", "text-slate-900");
+        btn.classList.add("text-slate-600");
+      });
+      const activeBtn = document.getElementById(`status-${type}`);
+      if (activeBtn) {
+        activeBtn.classList.add("bg-white", "shadow-sm", "text-slate-900");
+        activeBtn.classList.remove("text-slate-600");
+      }
+      render();
+    }
+
+    // Lọc theo vai trò (X, P, B, Y)
+    function setRoleFilter(val) {
+      roleFilterVal = val;
+      render();
+    }
+
+    // Render danh sách chính
+    function render() {
+      const monthData = appData[currentMonth] || {};
+      const tbody = document.getElementById("memberTableBody");
+      tbody.innerHTML = "";
+
+      let completedCount = 0;
+      TEAM_MEMBERS.forEach(m => {
+        if (monthData[m.mnv]?.completed) completedCount++;
+      });
+
+      const total = TEAM_MEMBERS.length;
+      const pendingCount = total - completedCount;
+      const percentage = Math.round((completedCount / total) * 100);
+
+      // Cập nhật chỉ số
+      document.getElementById("totalCount").innerText = total;
+      document.getElementById("completedCount").innerText = completedCount;
+      document.getElementById("pendingCount").innerText = pendingCount;
+      document.getElementById("ratePercent").innerText = `${percentage}%`;
+      document.getElementById("progressBar").style.width = `${percentage}%`;
+
+      document.getElementById("count-all").innerText = total;
+      document.getElementById("count-done").innerText = completedCount;
+      document.getElementById("count-pending").innerText = pendingCount;
+
+      // Áp dụng bộ lọc
+      const filtered = TEAM_MEMBERS.filter(m => {
+        const isDone = !!monthData[m.mnv]?.completed;
+
+        // Trạng thái nộp
+        if (statusFilter === "done" && !isDone) return false;
+        if (statusFilter === "pending" && isDone) return false;
+
+        // Hạng/Chức vụ
+        if (roleFilterVal !== "all" && m.role !== roleFilterVal) return false;
+
+        // Tìm kiếm
+        if (searchQuery) {
+          const s = searchQuery.toLowerCase();
+          const matchName = m.fullName.toLowerCase().includes(s);
+          const matchMnv = m.mnv.toLowerCase().includes(s);
+          const matchOld = m.oldGroup.toLowerCase().includes(s);
+          const matchNote = m.note.toLowerCase().includes(s);
+          return matchName || matchMnv || matchOld || matchNote;
+        }
+
+        return true;
+      });
+
+      const emptyState = document.getElementById("emptyState");
+      if (filtered.length === 0) {
+        emptyState.classList.remove("hidden");
+      } else {
+        emptyState.classList.add("hidden");
+      }
+
+      // Tạo các hàng trong bảng
+      filtered.forEach((m, idx) => {
+        const record = monthData[m.mnv];
+        const isDone = record && record.completed;
+        const timeText = isDone ? record.timestamp : "—";
+
+        const tr = document.createElement("tr");
+        tr.className = `transition hover:bg-sky-50/40 ${isDone ? 'bg-white' : 'bg-slate-50/30'}`;
+
+        tr.innerHTML = `
+          <td class="py-3 px-4 text-center text-xs font-semibold text-slate-400">${idx + 1}</td>
+          <td class="py-3 px-4">
+            <span class="inline-block font-mono font-bold text-xs bg-slate-100 text-slate-800 px-2 py-0.5 rounded border border-slate-200">${m.mnv}</span>
+          </td>
+          <td class="py-3 px-4">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${
+                m.isLeader ? 'bg-amber-100 text-amber-800 ring-2 ring-amber-400' : (isDone ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-700')
+              }">
+                ${m.isLeader ? '<i class="fa-solid fa-star text-amber-600"></i>' : m.fullName.charAt(0)}
+              </div>
+              <div>
+                <p class="font-bold text-slate-900 text-sm leading-tight flex items-center gap-1.5">
+                  ${m.fullName}
+                </p>
+                ${m.isLeader ? '<span class="text-[10px] font-extrabold text-amber-600 uppercase tracking-wide">Nhóm trưởng 1.14</span>' : ''}
+              </div>
+            </div>
+          </td>
+          <td class="py-3 px-4 text-center">
+            ${getRoleBadge(m.role, m.isLeader)}
+          </td>
+          <td class="py-3 px-4 hidden md:table-cell text-center">
+            <span class="text-xs font-mono font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded">${m.oldGroup}</span>
+          </td>
+          <td class="py-3 px-4 text-center">
+            ${isDone ? `
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
+                <i class="fa-solid fa-circle-check mr-1.5 text-xs"></i> Đã nộp
+              </span>
+            ` : `
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-600 border border-rose-200/80">
+                <i class="fa-regular fa-clock mr-1.5 text-xs"></i> Chưa làm
+              </span>
+            `}
+          </td>
+          <td class="py-3 px-4 text-xs">
+            ${isDone ? `
+              <div class="flex items-center space-x-2">
+                <span class="font-bold text-slate-800 bg-emerald-50 text-emerald-800 px-2 py-1 rounded-lg border border-emerald-200/70 inline-flex items-center">
+                  <i class="fa-regular fa-calendar-check mr-1.5 text-emerald-600"></i>${timeText}
+                </span>
+                <button onclick="openEditTimeModal('${m.mnv}')" title="Sửa thời gian hoàn thành" class="p-1 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition">
+                  <i class="fa-solid fa-pen text-[11px]"></i>
+                </button>
+              </div>
+            ` : `
+              <div class="flex items-center space-x-2">
+                <span class="text-slate-400 italic">Chưa xác nhận</span>
+                <button onclick="openEditTimeModal('${m.mnv}')" title="Nhập mốc thời gian hoàn thành" class="text-[11px] font-semibold text-blue-600 hover:underline">
+                  + Đặt giờ
+                </button>
+              </div>
+            `}
+          </td>
+          <td class="py-3 px-4 text-center">
+            <button 
+              onclick="toggleMemberStatus('${m.mnv}')" 
+              class="px-3 py-1.5 rounded-xl text-xs font-bold transition inline-flex items-center space-x-1 ${
+                isDone 
+                  ? 'text-slate-600 hover:text-rose-600 hover:bg-rose-50 border border-slate-200' 
+                  : 'text-white bg-blue-700 hover:bg-blue-800 shadow-sm shadow-blue-500/20'
+              }"
+            >
+              ${isDone ? `<i class="fa-solid fa-arrow-rotate-left"></i><span>Hủy</span>` : `<i class="fa-solid fa-check"></i><span>Hoàn thành</span>`}
+            </button>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Reset cả tháng
+    function resetMonthStatus() {
+      const confirmed = window.confirm(`Bạn có chắc chắn muốn làm mới (reset) toàn bộ trạng thái khảo sát của Nhóm 1.14 trong tháng [${currentMonth}]?`);
+      if (confirmed) {
+        appData[currentMonth] = {};
+        saveData();
+        render();
+        showToast("Đã làm mới dữ liệu khảo sát tháng!", "info");
+      }
+    }
+
+    // Toast Alert
+    let toastTimer;
+    function showToast(msg, type = "success") {
+      const toast = document.getElementById("toast");
+      const toastMessage = document.getElementById("toastMessage");
+      const toastIcon = document.getElementById("toastIcon");
+
+      toastMessage.innerText = msg;
+      if (type === "success") {
+        toastIcon.className = "fa-solid fa-circle-check text-emerald-400";
+      } else if (type === "info") {
+        toastIcon.className = "fa-solid fa-circle-info text-sky-400";
+      } else {
+        toastIcon.className = "fa-solid fa-triangle-exclamation text-amber-400";
+      }
+
+      toast.classList.remove("translate-y-16", "opacity-0");
+      toast.classList.add("translate-y-0", "opacity-100");
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("translate-y-0", "opacity-100");
+        toast.classList.add("translate-y-16", "opacity-0");
+      }, 3200);
+    }
+
+    // Lắng nghe tìm kiếm
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      searchQuery = e.target.value.trim();
+      render();
+    });
+
+    // Khởi động ứng dụng
+    window.onload = function() {
+      loadData();
+      initMonthSelector();
+      render();
+    };
+  </script>
+</body>
+</html>
