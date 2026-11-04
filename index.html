@@ -157,7 +157,7 @@
         </select>
 
         <!-- Trạng Thái Tabs -->
-        <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs font-semibold">
+        <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs font-semibold flex-wrap gap-1 sm:gap-0">
           <button onclick="setStatusFilter('all')" id="status-all" class="status-btn px-3 py-1.5 rounded-lg transition bg-white shadow-sm text-slate-900">
             Tất cả (<span id="count-all">42</span>)
           </button>
@@ -166,6 +166,10 @@
           </button>
           <button onclick="setStatusFilter('pending')" id="status-pending" class="status-btn px-3 py-1.5 rounded-lg transition text-slate-600 hover:text-slate-900">
             Chưa nộp (<span id="count-pending">42</span>)
+          </button>
+          <button onclick="setStatusFilter('late_watch')" id="status-late_watch" class="status-btn px-3 py-1.5 rounded-lg transition text-slate-600 hover:text-slate-900 inline-flex items-center gap-1.5 font-bold">
+            <i class="fa-solid fa-bell text-amber-500"></i>
+            <span>Hay Nộp Muộn (Top 10)</span>
           </button>
         </div>
 
@@ -430,6 +434,44 @@
     const STORAGE_KEY = "SURVEY_APP_TEAM_1_14";
     const DOCS_STORAGE_KEY = "SURVEY_APP_DOCS_1_14";
     const EXPORT_PASSWORD_SECRET = "VNA@2026";
+
+    const LATE_WATCH_KEY = "SURVEY_LATE_WATCH_1_14";
+    // Mặc định chọn 10 thành viên cần lưu ý đôn đốc nhất
+    const DEFAULT_LATE_WATCH = ["8316", "7943", "6803", "7157", "3952", "3474", "4618", "7137", "5995", "6931"];
+    let lateWatchlist = [];
+
+    function loadWatchlist() {
+      try {
+        const raw = localStorage.getItem(LATE_WATCH_KEY);
+        if (raw) {
+          lateWatchlist = JSON.parse(raw);
+        } else {
+          lateWatchlist = DEFAULT_LATE_WATCH;
+          saveWatchlist();
+        }
+      } catch (e) {
+        lateWatchlist = DEFAULT_LATE_WATCH;
+      }
+    }
+
+    function saveWatchlist() {
+      try {
+        localStorage.setItem(LATE_WATCH_KEY, JSON.stringify(lateWatchlist));
+      } catch (e) {}
+    }
+
+    function toggleWatchlist(mnv) {
+      if (lateWatchlist.includes(mnv)) {
+        lateWatchlist = lateWatchlist.filter(id => id !== mnv);
+        showToast("Đã bỏ khỏi danh sách theo dõi đôn đốc", "info");
+      } else {
+        lateWatchlist.push(mnv);
+        showToast("Đã thêm vào danh sách theo dõi đôn đốc", "success");
+      }
+      saveWatchlist();
+      render();
+    }
+
 
     let appData = {};
     let docsData = [];
@@ -960,6 +1002,7 @@
         // Trạng thái nộp
         if (statusFilter === "done" && !isDone) return false;
         if (statusFilter === "pending" && isDone) return false;
+        if (statusFilter === "late_watch" && !lateWatchlist.includes(m.mnv)) return false;
 
         // Hạng/Chức vụ
         if (roleFilterVal !== "all" && m.role !== roleFilterVal) return false;
@@ -1008,8 +1051,14 @@
               <div>
                 <p class="font-bold text-slate-900 text-sm leading-tight flex items-center gap-1.5">
                   ${m.fullName}
+                  <button onclick="toggleWatchlist('${m.mnv}')" title="${lateWatchlist.includes(m.mnv) ? 'Đang trong danh sách hay làm cuối / cần đôn đốc (Bấm để hủy)' : 'Thêm vào danh sách hay làm cuối'}" class="text-[11px] transition ${lateWatchlist.includes(m.mnv) ? 'text-amber-500 hover:text-amber-600' : 'text-slate-300 hover:text-amber-400'}">
+                    <i class="fa-solid fa-bell"></i>
+                  </button>
                 </p>
-                ${m.isLeader ? '<span class="text-[10px] font-extrabold text-amber-600 uppercase tracking-wide">Nhóm trưởng 1.14</span>' : ''}
+                <div class="flex items-center gap-1.5 mt-0.5">
+                  ${m.isLeader ? '<span class="text-[10px] font-extrabold text-amber-600 uppercase tracking-wide">Nhóm trưởng 1.14</span>' : ''}
+                  ${lateWatchlist.includes(m.mnv) ? '<span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-50 text-amber-700 border border-amber-200">Hay làm cuối</span>' : ''}
+                </div>
               </div>
             </div>
           </td>
@@ -1112,6 +1161,7 @@
 
     // Khởi động ứng dụng
     window.onload = function() {
+      loadWatchlist();
       loadData();
       initMonthSelector();
       render();
