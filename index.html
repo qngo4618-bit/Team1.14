@@ -188,8 +188,9 @@
           </button>
         </div>
 
-        <button onclick="resetMonthStatus()" title="Làm mới trạng thái tháng này" class="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl border border-slate-200 transition">
-          <i class="fa-solid fa-arrows-rotate text-sm"></i>
+        <button onclick="promptDeleteDataPassword()" title="Xóa dữ liệu khảo sát (Chỉ dành cho Quản lý - Nhập pass VNA@2026)" class="px-2.5 py-1.5 text-rose-600 hover:text-white hover:bg-rose-600 rounded-xl border border-rose-200 transition inline-flex items-center gap-1.5 text-xs font-bold shadow-sm">
+          <i class="fa-solid fa-trash-can text-xs"></i>
+          <span>Xóa Dữ Liệu</span>
         </button>
       </div>
     </div>
@@ -344,6 +345,58 @@
         <span class="text-xs text-slate-500"><i class="fa-solid fa-shield-halved text-emerald-600 mr-1"></i>Hệ thống tự động lưu trữ tài liệu offline</span>
         <button onclick="closeDocsModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-200 bg-white border border-slate-200 rounded-xl transition">
           Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal Xác Thực Quản Lý Xóa Dữ Liệu -->
+  <div id="deleteDataModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden p-6 space-y-4 border border-rose-100">
+      <div class="text-center">
+        <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-inner">
+          <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+        </div>
+        <h3 class="font-bold text-slate-900 text-base">Quyền Quản Lý: Xóa Dữ Liệu</h3>
+        <p class="text-xs text-slate-500 mt-1">Hành động này sẽ làm mới dữ liệu và đồng bộ đến tất cả các máy.</p>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1.5">Phạm vi xóa dữ liệu:</label>
+          <select id="deleteScopeSelect" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-rose-500">
+            <option value="current">Chỉ xóa kết quả tháng hiện tại</option>
+            <option value="all">Xóa toàn bộ tất cả các tháng (Về 0)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1.5">Mật khẩu xác thực Quản lý:</label>
+          <div class="relative">
+            <input 
+              type="password" 
+              id="deletePasswordInput" 
+              placeholder="Nhập mật khẩu quản lý..." 
+              class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-rose-600 focus:bg-white focus:ring-2 focus:ring-rose-100 transition"
+              onkeydown="if(event.key === 'Enter') verifyDeletePassword()"
+            >
+            <button type="button" onclick="toggleDeletePasswordVisibility()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600">
+              <i id="deleteEyeIcon" class="fa-regular fa-eye text-sm"></i>
+            </button>
+          </div>
+          <p id="deletePasswordError" class="text-[11px] text-rose-600 font-semibold mt-1.5 hidden flex items-center">
+            <i class="fa-solid fa-circle-exclamation mr-1"></i> Mật khẩu Quản lý không chính xác!
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2 pt-2">
+        <button onclick="closeDeleteDataModal()" class="w-1/2 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">
+          Hủy bỏ
+        </button>
+        <button onclick="verifyDeletePassword()" class="w-1/2 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-md shadow-rose-600/30 transition flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-trash-can"></i> Xác Nhận Xóa
         </button>
       </div>
     </div>
@@ -615,25 +668,9 @@
         saveDocs();
       }
 
-      // Khởi tạo tháng hiện tại nếu chưa có dữ liệu
+      // Khởi tạo tháng hiện tại (Mặc định bắt đầu từ 0/42 tiếp viên chưa nộp)
       if (!appData[currentMonth]) {
         appData[currentMonth] = {};
-        const initialChecked = [
-          { id: "4616", time: "01/11/2026 08:30" },
-          { id: "3594", time: "01/11/2026 09:15" },
-          { id: "2611", time: "02/11/2026 14:20" },
-          { id: "6559", time: "02/11/2026 16:45" },
-          { id: "7831", time: "03/11/2026 10:10" },
-          { id: "5176", time: "03/11/2026 11:05" },
-          { id: "7949", time: "03/11/2026 15:30" },
-          { id: "7143", time: "04/11/2026 08:50" }
-        ];
-        initialChecked.forEach(item => {
-          appData[currentMonth][item.id] = {
-            completed: true,
-            timestamp: item.time
-          };
-        });
         saveData();
       }
     }
@@ -1203,6 +1240,64 @@
       });
     }
 
+
+    // ==========================================
+    // QUYỀN QUẢN LÝ: XÓA DỮ LIỆU BẰNG MẬT KHẨU
+    // ==========================================
+    function promptDeleteDataPassword() {
+      const pwdInput = document.getElementById("deletePasswordInput");
+      pwdInput.value = "";
+      document.getElementById("deletePasswordError").classList.add("hidden");
+      pwdInput.classList.remove("border-rose-400", "bg-rose-50/30");
+      document.getElementById("deleteDataModal").classList.remove("hidden");
+      setTimeout(() => pwdInput.focus(), 100);
+    }
+
+    function closeDeleteDataModal() {
+      document.getElementById("deleteDataModal").classList.add("hidden");
+    }
+
+    function toggleDeletePasswordVisibility() {
+      const pwdInput = document.getElementById("deletePasswordInput");
+      const icon = document.getElementById("deleteEyeIcon");
+      if (pwdInput.type === "password") {
+        pwdInput.type = "text";
+        icon.className = "fa-regular fa-eye-slash text-sm";
+      } else {
+        pwdInput.type = "password";
+        icon.className = "fa-regular fa-eye text-sm";
+      }
+    }
+
+    function verifyDeletePassword() {
+      const pwdInput = document.getElementById("deletePasswordInput");
+      const err = document.getElementById("deletePasswordError");
+      const scope = document.getElementById("deleteScopeSelect").value;
+
+      if (pwdInput.value === EXPORT_PASSWORD_SECRET) {
+        err.classList.add("hidden");
+        closeDeleteDataModal();
+
+        if (scope === "all") {
+          appData = {};
+          appData[currentMonth] = {};
+          showToast("Quyền Quản lý: Đã xóa trắng toàn bộ dữ liệu tất cả các tháng!", "info");
+        } else {
+          appData[currentMonth] = {};
+          showToast(`Quyền Quản lý: Đã làm mới dữ liệu tháng [${currentMonth}] về 0!`, "info");
+        }
+
+        saveData();
+        render();
+        pushToCloud(true);
+      } else {
+        err.classList.remove("hidden");
+        pwdInput.classList.add("border-rose-400", "bg-rose-50/30");
+        pwdInput.focus();
+        showToast("Mật khẩu Quản lý không chính xác!", "warning");
+      }
+    }
+
     // Reset cả tháng
     function resetMonthStatus() {
       const confirmed = window.confirm(`Bạn có chắc chắn muốn làm mới (reset) toàn bộ trạng thái khảo sát của Nhóm 1.14 trong tháng [${currentMonth}]?`);
@@ -1424,35 +1519,26 @@
       }
     }
 
-    // Hợp nhất dữ liệu Cloud với dữ liệu cục bộ (ưu tiên bản có timestamp mới hơn)
+    // Đồng bộ chuẩn xác dữ liệu từ Cloud về máy
     function mergeCloudData(cloudPayload) {
-      let changed = false;
-      const cloudAppData = cloudPayload.appData || {};
+      if (!cloudPayload || !cloudPayload.appData) return;
       
-      for (const monthKey in cloudAppData) {
-        if (!appData[monthKey]) {
-          appData[monthKey] = cloudAppData[monthKey];
-          changed = true;
-        } else {
-          for (const mnv in cloudAppData[monthKey]) {
-            const localRec = appData[monthKey][mnv];
-            const cloudRec = cloudAppData[monthKey][mnv];
-            if (!localRec || (cloudRec && cloudRec.completed !== localRec.completed)) {
-              appData[monthKey][mnv] = cloudRec;
-              changed = true;
-            }
-          }
-        }
+      // Khi Cloud có dữ liệu, lấy bản Cloud làm chuẩn nguồn sự thật (Source of Truth)
+      const cloudAppData = cloudPayload.appData;
+      let isDifferent = JSON.stringify(appData) !== JSON.stringify(cloudAppData);
+
+      if (isDifferent) {
+        appData = cloudAppData;
+        saveData();
+        render();
       }
 
       if (cloudPayload.lateWatchlist && Array.isArray(cloudPayload.lateWatchlist)) {
-        lateWatchlist = cloudPayload.lateWatchlist;
-        saveWatchlist();
-      }
-
-      if (changed) {
-        saveData();
-        render();
+        if (JSON.stringify(lateWatchlist) !== JSON.stringify(cloudPayload.lateWatchlist)) {
+          lateWatchlist = cloudPayload.lateWatchlist;
+          saveWatchlist();
+          render();
+        }
       }
     }
 
